@@ -53,7 +53,7 @@ struct MainTabbedView: View {
         ZStack(alignment: .bottom){
             
             TabView(selection: $selectedTab) {
-                Text("test 3")
+                Text("test 3")/*.frame(maxWidth: .infinity, maxHeight: .infinity).background(.green).ignoresSafeArea()*/
                     .tag(0)
                 
                 Text("test")
@@ -66,48 +66,69 @@ struct MainTabbedView: View {
                     .tag(3)
                 
             }
-        }
-            
-        
+//            Divider()
             ZStack {
-    //            Spacer()
+    //
+//                Divider()
                 HStack{
+//                    Divider()
                     ForEach((TabbedItems.allCases), id: \.self) { item in
                         Button{
                             selectedTab = item.rawValue
+
                         } label: {
+                            
+//                            Text("Test")
+                            
                             CustomTabItem(imageName: item.iconName, title: item.title, isActive: (selectedTab == item.rawValue))
                         }
-                        
                     }
-                }.padding(6)
+//                    Divider()
+                }
+                
             }
-            .frame(height: 70)
+            .frame(height: 90)
             .background(.purple.opacity(0.2))
-            .cornerRadius(35)
-            .padding(.horizontal, 12)
+//            .cornerRadius(12)
+            .padding(.horizontal, 0)
+            .overlay(
+                Rectangle()
+                    .frame(height: 1)
+                    .foregroundColor(.black),
+                alignment: .top
+            )
+            
+
         
+
+        }.ignoresSafeArea(.all, edges: .all)
     }
 }
 
 extension MainTabbedView {
     func CustomTabItem(imageName: String, title: String, isActive: Bool) -> some View {
         
-        HStack(spacing: 10) {
+        HStack(spacing: 0) {
             Spacer()
             Image(systemName: imageName)
+                .resizable()
                 .foregroundColor(isActive ? .black : .gray)
-                .frame(width: 20, height: 20)
-            if isActive {
-                Text(title)
-                    .font(.system(size: 14))
-                    .foregroundColor(isActive ? .black : .gray)
-            }
+                .frame(width: 25, height: 25)
+//            Text(title)
+//                .font(.system(size: 14))
+//                .foregroundColor(isActive ? .black : .gray)
+
+//            if isActive {
+//                Text(title)
+//                    .font(.system(size: 14))
+//                    .foregroundColor(isActive ? .black : .gray)
+//            }
             Spacer()
         }
-        .frame(width: isActive ? .infinity : 60, height : 60)
+        /*.frame(width: isActive ? .infinity : 60, height : 60)*/
+        .frame(width: isActive ? .infinity : .infinity, height : 90 )
         .background(isActive ? .purple.opacity(0.4) : .clear)
-        .cornerRadius(30)
+        .cornerRadius(0)
     }
 }
 
