@@ -14,8 +14,17 @@ struct Workout_App_IOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabbedView()
         }
+        .modelContainer(for: [
+            WorkoutTemplate.self,
+            ExerciseTemplate.self,
+            WorkoutBlock.self,
+            
+            
+        
+        
+        ])
 
     }
 }
