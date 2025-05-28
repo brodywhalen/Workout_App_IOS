@@ -1,0 +1,9 @@
+Counting objects: 100% (201/201), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (181/181), done.
+error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400
+send-pack: unexpected disconnect while reading sideband packet
+Writing objects: 100% (185/185), 64.96 MiB | 5.61 MiB/s, done.
+Total 185 (delta 65), reused 0 (delta 0), pack-reused 0
+fatal: the remote end hung up unexpecteup-to-date
+
