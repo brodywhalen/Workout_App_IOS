@@ -16,15 +16,7 @@ struct Workout_App_IOSApp: App {
         WindowGroup {
             MainTabbedView()
         }
-        .modelContainer(for: [
-            WorkoutTemplate.self,
-            ExerciseTemplate.self,
-            WorkoutBlock.self,
-            
-            
-        
-        
-        ])
+        .modelContainer(appContainer)
 
     }
 }

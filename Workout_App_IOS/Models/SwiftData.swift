@@ -29,20 +29,16 @@ class WorkoutTemplate: Identifiable {
 @Model
 class ExerciseTemplate: Identifiable {
     var id: String
-    var name: String
+    var exercise: Exercise
     var defaultSets: Int
     var defaultReps: Int
-    var instructions: String
     
-    init(id: String, name: String, defaultSets: Int, defaultReps: Int, instructions: String) {
-        self.id = id
-        self.name = name
+    init(defaultSets: Int, defaultReps: Int, excercise: Exercise) {
+        self.id = UUID().uuidString
         self.defaultSets = defaultSets
         self.defaultReps = defaultReps
-        self.instructions = instructions
+        self.exercise = excercise
     }
-    
-    
 }
 
 @Model
@@ -62,8 +58,8 @@ class WorkoutBlock: Identifiable {
         case superset
     }
 
-    init(id: String, workoutTemplate: WorkoutTemplate?, type: WorkoutBlockType, exercise: ExerciseTemplate? = nil, exercises: [ExerciseTemplate]? = nil) {
-        self.id = id
+    init(workoutTemplate: WorkoutTemplate?, type: WorkoutBlockType, exercise: ExerciseTemplate? = nil, exercises: [ExerciseTemplate]? = nil) {
+        self.id = UUID().uuidString
         self.workoutTemplate = workoutTemplate
         self.type = type
         self.exercise = exercise
@@ -71,7 +67,19 @@ class WorkoutBlock: Identifiable {
     }
 }
 
-
+@Model
+class Exercise: Identifiable {
+    var id: String
+    var name: String
+    var descriptor: String
+    // muscles targeted
+    
+    init(name: String, descriptor: String) {
+        self.id = UUID().uuidString
+        self.name = name
+        self.descriptor = descriptor
+    }
+}
 
 
 

@@ -23,8 +23,7 @@ struct Logger: View {
         template.descriptor = "updated"
         try? context.save()
     }
-    
-    
+        
     var body: some View {
         NavigationView {
             ZStack {
@@ -66,44 +65,7 @@ struct Logger: View {
     }
         
 }
-struct NewWorkoutView: View {
-    @Environment(\.dismiss) var dismiss
-    @Environment(\.modelContext) private var context
-    
-    @State private var workoutName = ""
-    @State private var durationText = ""
-    
-    var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Workout Info")) {
-                    TextField("Workout Name", text: $workoutName)
-                    TextField("Duration (minutes)", text: $durationText)
-    
-                }
-            }
-            .navigationTitle("New Workout")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        saveWorkout()
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-    private func saveWorkout() {
-        
-//        let newSession = WorkoutTemplate(name: self.workoutName, duration: Int(self.durationText) ?? 0)
-//        context.insert(newSession)
-    }
-}
+
 struct AddNewTemplateSquare: View {
     
     
