@@ -7,16 +7,26 @@ struct WorkoutPopUp: View {
     
     
 // place holder data
+    let template: WorkoutTemplate
     
-    let name: String
-    let duration: Int
+//    let name: String = t
+//    let exercises: Int
     @State private var offset: CGFloat = 1000
     @Binding var isActive: Bool
     let action: () -> ()
     
     var body: some View {
         VStack {
-            Text(name)
+            Text(template.name)
+            ForEach(template.blocks.flatMap(\.allExercises)){ exercise in
+                HStack {
+                    Text(" - \(exercise.exercise.name): \(exercise.defaultSets)x\(exercise.defaultReps)")
+                        .font(.body)
+                    Spacer()
+                }
+
+            }
+            .padding()
             Button {
                 action()
             } label: {
@@ -81,7 +91,7 @@ struct WorkoutPopUp: View {
 
 
 #Preview {
-    WorkoutPopUp(name: "Squat", duration: 5, isActive: .constant(true)) {
-        print("button clicked")
-    }
+//    WorkoutPopUp(name: "Squat", duration: 5, isActive: .constant(true)) {
+//        print("button clicked")
+//    }
 }

@@ -26,7 +26,7 @@ struct MainTabbedView: View {
                 Logger()
                     .tag(1)
                 
-                CameraPage()
+//                CameraPage() removing for testing purposes
                     .tag(2)
                 
                 UserPage()

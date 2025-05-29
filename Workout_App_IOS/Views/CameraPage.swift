@@ -132,30 +132,25 @@ extension FrameHandler: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
-//        if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-//             let width = CVPixelBufferGetWidth(imageBuffer)
-//             let height = CVPixelBufferGetHeight(imageBuffer)
-////             print("Resolution: \(width)x\(height)")
-////             videoResolution = CGSize(width: width, height: height)
-//         }
-        
-       
-        
-        guard let cgImage = ImageFromSampleBuffer(sampleBuffer: sampleBuffer) else {return}
-       
-        DispatchQueue.main.async { [unowned self] in
-            self.frame = cgImage
-            
+
+        autoreleasepool {
+            guard let cgImage = ImageFromSampleBuffer(sampleBuffer: sampleBuffer) else {return}
+           
+            DispatchQueue.main.async { [unowned self] in
+                self.frame = cgImage
+                
+            }
+         
+            // pass pixel buffer
+            let currentTimeMs = Date().timeIntervalSince1970 * 1000
+            backgroundQueue.async { [weak self] in
+              self?.poseLandmarkerService?.detectAsync(
+                sampleBuffer: sampleBuffer,
+                orientation: .up,
+                timeStamps: Int(currentTimeMs))
+            }
         }
-     
-        // pass pixel buffer
-        let currentTimeMs = Date().timeIntervalSince1970 * 1000
-        backgroundQueue.async { [weak self] in
-          self?.poseLandmarkerService?.detectAsync(
-            sampleBuffer: sampleBuffer,
-            orientation: .up,
-            timeStamps: Int(currentTimeMs))
-        }
+
         
         //all UI updates should/must be preformed on the main queue
 

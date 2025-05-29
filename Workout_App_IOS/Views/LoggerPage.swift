@@ -4,6 +4,10 @@
 //
 //  Created by Brody Whalen on 5/12/25.
 //
+// Issues to fix: Make a close keyboard button that works and does not require a re-render
+// Feautures to add: Superset grouping
+
+
 
 import SwiftUI
 import SwiftData
@@ -45,7 +49,7 @@ struct Logger: View {
                 }
                 if showingModal, let session = selectedTemplate {
                     
-                    WorkoutPopUp(name: session.name, duration: 6,  isActive: $showingModal) {
+                    WorkoutPopUp(template: session,  isActive: $showingModal) {
                         print("pass to VM")
                         
                     }
@@ -55,12 +59,12 @@ struct Logger: View {
         }
         .navigationTitle("Logger").font(.title)
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            //TBD
-        }
         .fullScreenCover(isPresented: $showingNewWorkoutTemplate)  {
-            NewWorkoutView()
-                .interactiveDismissDisabled(true)
+            NavigationStack {
+                NewWorkoutView()
+                    .interactiveDismissDisabled(true)
+
+            }
         }
     }
         

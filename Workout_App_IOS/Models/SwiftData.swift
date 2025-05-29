@@ -65,6 +65,15 @@ class WorkoutBlock: Identifiable {
         self.exercise = exercise
         self.exercises = exercises
     }
+    
+    var allExercises: [ExerciseTemplate] {
+        switch type {
+        case .single:
+            return exercise.map { [$0] } ?? []
+        case .superset:
+            return exercises ?? []
+        }
+    }
 }
 
 @Model
@@ -78,6 +87,69 @@ class Exercise: Identifiable {
         self.id = UUID().uuidString
         self.name = name
         self.descriptor = descriptor
+    }
+}
+@Model
+class WorkoutSession: Identifiable {
+    var id: String
+    var timestart: Date
+    var timeend: Date
+    var exercises: [ExerciseSession]
+    //var user -- implement once user admin is created
+    
+    
+    init(timestart: Date, timeend: Date, exercises: [ExerciseSession]) {
+        self.id = UUID().uuidString
+        self.timestart = timestart
+        self.timeend = timeend
+        self.exercises = exercises
+    }
+    
+}
+
+@Model
+class ExerciseSession: Identifiable {
+    var id: String
+    var timestart: Date
+    var timeend: Date
+    var sets: [ExerciseSet]
+    
+    init(timestart: Date, timeend: Date, sets: [ExerciseSet]){
+        self.id = UUID().uuidString
+        self.timestart = timestart
+        self.timeend = timeend
+        self.sets = sets
+    }
+    
+}
+@Model
+class ExerciseSet: Identifiable {
+    var id:String
+    var reps: [Rep]
+    var setType: SetType?
+    
+    enum SetType: Codable {
+        case warmUp
+        case toFailure
+        case dropSet
+    }
+    
+    
+    init(reps: [Rep]) {
+        self.id = UUID().uuidString
+        self.reps = reps
+    }
+}
+@Model
+class Rep: Identifiable {
+    var id: String
+    var weight: Double
+    var timestamp: Date
+    
+    init(weight: Double, timestamp: Date) {
+        self.id = UUID().uuidString
+        self.weight = weight
+        self.timestamp = timestamp
     }
 }
 

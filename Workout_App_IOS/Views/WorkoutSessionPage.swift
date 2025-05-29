@@ -8,13 +8,48 @@ import SwiftUI
 
 struct WorkoutSessionPage: View {
     
-    //@Binding TemplateforSession: WorkoutTemplate
+    //    @Binding TemplateforSession: WorkoutTemplate
     
     
     var body: some View {
-        ZStack {
-            Text("Hello World")
+        VStack {
+            HStack {
+                VStack (alignment: .leading){
+                    
+                    Text("Workout Name")
+                        .font(.title)
+                    Text("May 28th, 2028")
+                    Text("Hello World")
+                    
+//                    Spacer()
+                }
+                
+                Spacer()
+            }
+            .padding()
+            .background(Color.blue)
+            
+            Grid {
+                Divider()
+                GridRow {
+                    Group {
+                        Text("Set")
+                        Text("Weight (lbs)")
+                        Text("Reps")
+                        Text(Image(systemName: "checkmark.diamond"))
+                    }.font(.headline)
+                }
+                Divider()
+            
+            }
+            .background(Color.red)
+            .padding()
+//            .background(Color.red)
+            Spacer()
         }
+        
+
+        
     }
 }
 

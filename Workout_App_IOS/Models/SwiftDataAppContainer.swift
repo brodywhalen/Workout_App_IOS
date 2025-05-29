@@ -11,10 +11,15 @@ import SwiftData
 let appContainer: ModelContainer = {
     do {
         let container = try ModelContainer(for:
-            WorkoutTemplate.self,
-            ExerciseTemplate.self,
-            WorkoutBlock.self,
-            Exercise.self
+           WorkoutTemplate.self,
+           ExerciseTemplate.self,
+           WorkoutBlock.self,
+           Exercise.self,
+           WorkoutSession.self,
+           ExerciseSession.self,
+           ExerciseSet.self,
+           Rep.self
+                      
         )
         
         //check to see if default data was already loaded
