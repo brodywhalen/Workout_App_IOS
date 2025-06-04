@@ -17,7 +17,7 @@ class WorkoutTemplate: Identifiable {
     var descriptor: String
     var blocks: [WorkoutBlock]
     
-    init(name: String, duration: Int, descriptor: String, blocks: [WorkoutBlock]  ) {
+    init(name: String, descriptor: String, blocks: [WorkoutBlock]  ) {
         self.id = UUID().uuidString
         self.name = name
         self.descriptor = descriptor

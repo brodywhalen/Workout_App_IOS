@@ -8,15 +8,26 @@
 import SwiftUI
 import SwiftData
 
+
 @main
 struct Workout_App_IOSApp: App {
 
-
+@StateObject var bannerManager = BannerManager() // intializes the banner at startup....maybe not the best idea if I was perfect
+    
     var body: some Scene {
         WindowGroup {
             MainTabbedView()
+                .environmentObject(bannerManager)
         }
         .modelContainer(appContainer)
 
     }
 }
+
+// banner provider
+class BannerManager: ObservableObject {
+    @Published var isActiveWorkout: Bool = false
+    @Published var isInBannerMode: Bool = false
+    @Published var title: String?
+}
+

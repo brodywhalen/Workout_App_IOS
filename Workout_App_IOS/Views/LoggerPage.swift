@@ -18,6 +18,7 @@ struct Logger: View {
     @Query var templates: [WorkoutTemplate]
     @State private var showingNewWorkoutTemplate = false
     @State private var showingModal = false
+    @State private var showingWorkoutSession = false
     @State private var selectedTemplate: WorkoutTemplate? = nil
     
     func deleteTemplate(_ template: WorkoutTemplate) {
@@ -49,7 +50,7 @@ struct Logger: View {
                 }
                 if showingModal, let session = selectedTemplate {
                     
-                    WorkoutPopUp(template: session,  isActive: $showingModal) {
+                    WorkoutPopUp(template: session,  isActive: $showingModal, workoutIsActive: $showingWorkoutSession) {
                         print("pass to VM")
                         
                     }
@@ -66,6 +67,13 @@ struct Logger: View {
 
             }
         }
+        .sheet(isPresented: $showingWorkoutSession) {
+            if showingWorkoutSession, let session = selectedTemplate {
+                WorkoutSessionPage(TemplateforSession: session)
+            }
+            
+        }
+        
     }
         
 }

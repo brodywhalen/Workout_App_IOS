@@ -13,6 +13,10 @@ import SwiftData
 //import Foundation
 struct MainTabbedView: View {
     @State var selectedTab = 0
+    @EnvironmentObject var bannerManager: BannerManager
+    
+    
+    
     @Namespace var tabAnimation
     
     var body: some View {

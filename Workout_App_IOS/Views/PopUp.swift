@@ -12,7 +12,9 @@ struct WorkoutPopUp: View {
 //    let name: String = t
 //    let exercises: Int
     @State private var offset: CGFloat = 1000
+//    @State private var isShowingSheet = false
     @Binding var isActive: Bool
+    @Binding var workoutIsActive:Bool
     let action: () -> ()
     
     var body: some View {
@@ -24,21 +26,23 @@ struct WorkoutPopUp: View {
                         .font(.body)
                     Spacer()
                 }
-
+                
             }
             .padding()
             Button {
                 action()
+                workoutIsActive.toggle()
+                close()
             } label: {
                 ZStack{
-            
+                    
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundColor(Color.blue)
                     Text("Start Session")
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.white)
                         .padding()
-
+                    
                     
                 }
                 .padding()
@@ -62,10 +66,10 @@ struct WorkoutPopUp: View {
                     }
                     .tint(.black)
                 }
-
+                
                 Spacer()
             }.padding()
-
+            
         }
         .shadow(radius: 20)
         .padding(30)
@@ -75,6 +79,7 @@ struct WorkoutPopUp: View {
                 offset = 0
             }
         }
+
     }
     
     func close() {
