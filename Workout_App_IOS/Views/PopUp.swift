@@ -15,6 +15,7 @@ struct WorkoutPopUp: View {
 //    @State private var isShowingSheet = false
     @Binding var isActive: Bool
     @Binding var workoutIsActive:Bool
+    @Binding var isInSheetMode:Bool
     let action: () -> ()
     
     var body: some View {
@@ -31,7 +32,8 @@ struct WorkoutPopUp: View {
             .padding()
             Button {
                 action()
-                workoutIsActive.toggle()
+                workoutIsActive.toggle() // maybe have it so that workout is active is only started when play is pressed.
+                isInSheetMode.toggle()
                 close()
             } label: {
                 ZStack{

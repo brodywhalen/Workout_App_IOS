@@ -21,7 +21,7 @@ struct MainTabbedView: View {
     
     var body: some View {
         
-        ZStack(alignment: .bottom){
+        ZStack(/*alignment: .bottom*/){
             
             TabView(selection: $selectedTab) {
                 HomePage()
@@ -30,46 +30,68 @@ struct MainTabbedView: View {
                 Logger()
                     .tag(1)
                 
-//                CameraPage() removing for testing purposes
+                //                CameraPage() removing for testing purposes
                     .tag(2)
                 
                 UserPage()
                     .tag(3)
                 
             }
-            ZStack {
-                
-                
-                GeometryReader { geo in
-                    let tabCount = TabbedItems.allCases.count
-                    let tabWidth = geo.size.width / CGFloat(tabCount)
-                    
-                    // Background that slides
-                    RoundedRectangle(cornerRadius: 0)
-                        .fill(Color.blue)
-                        .frame(width: tabWidth, height: 90)
-                        .offset(x: CGFloat(selectedTab) * tabWidth)
-                        .matchedGeometryEffect(id: "tabBackground", in: tabAnimation)
-                        .animation(.easeInOut(duration: 0.2), value: selectedTab)
-                        .background(.ultraThinMaterial)
+            
+
+            VStack {
+                Spacer()
+                if bannerManager.isInBannerMode {
+                    BannerOverlayView(selectedTab: $selectedTab)
+//                        .onTapGesture {
+//                            withAnimation {
+//                                selectedTab = 1
+//                                bannerManager.restoreFullScreen()
+//                            }
+//                        }
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                        .zIndex(1)  // Ensure banner is above everything
                 }
-                
-                HStack{
-                    ForEach((TabbedItems.allCases), id: \.self) { item in
-                        Button{
-                            selectedTab = item.rawValue
-
-                        } label: {
-
-                            CustomTabItem(imageName: item.iconName, title: item.title, isActive: (selectedTab == item.rawValue))
+                ZStack {
+                    
+                    
+                    GeometryReader { geo in
+                        let tabCount = TabbedItems.allCases.count
+                        let tabWidth = geo.size.width / CGFloat(tabCount)
+                        
+                        // Background that slides
+                        RoundedRectangle(cornerRadius: 0)
+                            .fill(Color.blue)
+                            .frame(width: tabWidth, height: 90)
+                            .offset(x: CGFloat(selectedTab) * tabWidth)
+                            .matchedGeometryEffect(id: "tabBackground", in: tabAnimation)
+                            .animation(.easeInOut(duration: 0.2), value: selectedTab)
+                            .background(.clear)
+                    }
+                    
+                    HStack{
+                        ForEach((TabbedItems.allCases), id: \.self) { item in
+                            Button{
+                                selectedTab = item.rawValue
+                                
+                            } label: {
+                                
+                                CustomTabItem(imageName: item.iconName, title: item.title, isActive: (selectedTab == item.rawValue))
+                            }
                         }
                     }
                 }
+                .frame(height: 90)
+                .background(.white.opacity(1))
+                .padding(.horizontal, 0)
+                .opacity(1)
+    //            .offset(y: bannerManager.isInBannerMode ? 50: 0) // this will push tab bar down if needed
             }
-            .frame(height: 90)
-            .background(.white.opacity(1))
-            .padding(.horizontal, 0)
-            .opacity(1)
+
+            
+
+            
+            
         }.ignoresSafeArea(.all, edges: .all)
     }
 }
@@ -123,17 +145,36 @@ enum TabbedItems: Int, CaseIterable {
     }
 }
 
-
+struct BannerOverlayView: View {
+    @Binding var selectedTab: Int
+    @EnvironmentObject var bannerManager: BannerManager
+    
+    var body: some View {
+        VStack {
+            Button {
+                withAnimation {
+                    bannerManager.restoreFullScreen()
+                }
+                selectedTab = 1 // change tab back to the logger view
+            } label: {
+                HStack {
+                    Text("Banner Placeholder")
+                }
+            }
+        }
+    }
+    
+}
 
 //#Preview {
-//    
+//
 //    let config = ModelConfiguration(isStoredInMemoryOnly: true)
 //    let container = try! ModelContainer(for: WorkoutSession.self, configurations: config)
-//   
+//
 //    let context = container.mainContext
 //    context.insert(WorkoutSession(name: "legs", duration: 10))
-//    
-//    
+//
+//
 //   return MainTabbedView()
 //        .modelContainer(container)
 //}

@@ -13,12 +13,12 @@ import SwiftUI
 import SwiftData
 
 struct Logger: View {
-    
+    @EnvironmentObject var bannerManager: BannerManager
     @Environment(\.modelContext) private var context
     @Query var templates: [WorkoutTemplate]
     @State private var showingNewWorkoutTemplate = false
     @State private var showingModal = false
-    @State private var showingWorkoutSession = false
+//    @State private var showingWorkoutSession = false
     @State private var selectedTemplate: WorkoutTemplate? = nil
     
     func deleteTemplate(_ template: WorkoutTemplate) {
@@ -50,7 +50,7 @@ struct Logger: View {
                 }
                 if showingModal, let session = selectedTemplate {
                     
-                    WorkoutPopUp(template: session,  isActive: $showingModal, workoutIsActive: $showingWorkoutSession) {
+                    WorkoutPopUp(template: session,  isActive: $showingModal, workoutIsActive: $bannerManager.isActiveWorkout, isInSheetMode: $bannerManager.isInSheetMode) {
                         print("pass to VM")
                         
                     }
@@ -67,8 +67,15 @@ struct Logger: View {
 
             }
         }
-        .sheet(isPresented: $showingWorkoutSession) {
-            if showingWorkoutSession, let session = selectedTemplate {
+        .sheet(isPresented: $bannerManager.isInSheetMode,
+        onDismiss: {
+            print("dismissed the sheet")
+            withAnimation {
+                bannerManager.isInBannerMode = true
+            }
+        }
+        ) {
+            if let session = selectedTemplate { // add if gate if this does not work
                 WorkoutSessionPage(TemplateforSession: session)
             }
             
