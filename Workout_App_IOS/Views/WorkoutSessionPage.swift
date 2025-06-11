@@ -9,7 +9,7 @@ import SwiftUI
 struct WorkoutSessionPage: View {
     
     let TemplateforSession: WorkoutTemplate
-    
+    @EnvironmentObject var bannerManager: BannerManager
     // init copy
     // for now we will have changes to sets and reps update
     

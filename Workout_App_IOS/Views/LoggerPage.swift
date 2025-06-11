@@ -8,12 +8,12 @@
 // Feautures to add: Superset grouping
 
 
-
 import SwiftUI
 import SwiftData
 
 struct Logger: View {
     @EnvironmentObject var bannerManager: BannerManager
+    
     @Environment(\.modelContext) private var context
     @Query var templates: [WorkoutTemplate]
     @State private var showingNewWorkoutTemplate = false

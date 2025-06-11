@@ -93,13 +93,33 @@ class Exercise: Identifiable {
 class WorkoutSession: Identifiable {
     var id: String
     var timestart: Date
-    var timeend: Date
+    var timeend: Date?
     var exercises: [ExerciseSession]
     //var user -- implement once user admin is created
     
     
-    init(timestart: Date, timeend: Date, exercises: [ExerciseSession]) {
+    init(timestart: Date, timeend: Date? = nil, exercises: [ExerciseSession]) {
         self.id = UUID().uuidString
+        self.timestart = timestart
+        self.timeend = timeend
+        self.exercises = exercises
+    }
+    
+}
+// TODO: Add robust way to ensure that there is only one workout session in this model.
+@Model
+class ActiveWorkoutSession: Identifiable {
+    var title: String?
+    var id: String
+    var timestart: Date
+    var timeend: Date?
+    var exercises: [ExerciseSession]
+    //var user -- implement once user admin is created
+    
+    
+    init(title: String? = nil, timestart: Date, timeend: Date? = nil, exercises: [ExerciseSession]) {
+        self.id = UUID().uuidString
+        self.title = title
         self.timestart = timestart
         self.timeend = timeend
         self.exercises = exercises
@@ -110,14 +130,14 @@ class WorkoutSession: Identifiable {
 @Model
 class ExerciseSession: Identifiable {
     var id: String
-    var timestart: Date
-    var timeend: Date
+//    var timestart: Date
+//    var timeend: Date
     var sets: [ExerciseSet]
     
-    init(timestart: Date, timeend: Date, sets: [ExerciseSet]){
+    init(/*timestart: Date,*/ /*timeend: Date*/ sets: [ExerciseSet]){
         self.id = UUID().uuidString
-        self.timestart = timestart
-        self.timeend = timeend
+//        self.timestart = timestart
+//        self.timeend = timeend
         self.sets = sets
     }
     
@@ -144,12 +164,14 @@ class ExerciseSet: Identifiable {
 class Rep: Identifiable {
     var id: String
     var weight: Double
-    var timestamp: Date
+    var exercise: Exercise
+//    var timestamp: Date
     
-    init(weight: Double, timestamp: Date) {
+    init(weight: Double, exercise: Exercise) {
         self.id = UUID().uuidString
         self.weight = weight
-        self.timestamp = timestamp
+        self.exercise = exercise
+//        self.timestamp = timestamp
     }
 }
 

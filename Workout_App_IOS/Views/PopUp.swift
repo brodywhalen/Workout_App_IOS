@@ -2,17 +2,52 @@
 
 
 import SwiftUI
+import SwiftData
 
 struct WorkoutPopUp: View {
     
     
-// place holder data
+    @EnvironmentObject var bannerManager: BannerManager
+    @Environment(\.modelContext) private var context
+    // place holder data
     let template: WorkoutTemplate
     
-//    let name: String = t
-//    let exercises: Int
+    //THIS CREATES THE WORKOUT SESSION. I WANT IT TO CALL WHEN THE START IS PRESSED
+    func createWorkoutSession(template: WorkoutTemplate) -> ActiveWorkoutSession {
+        //delete existing ActiveWorkoutSessions
+        let descriptor = FetchDescriptor<ActiveWorkoutSession>()
+        if let existingSessions = try? context.fetch(descriptor) {
+            for session in existingSessions {
+                context.delete(session)
+            }
+        }
+        // This gets the an Array of Exercise Templates
+        let myExercisesTemplates = template.blocks.flatMap(\.allExercises)
+        // now I need to convert these templates into an Array of Exercise Sessions
+        let exerciseSessions = myExercisesTemplates.map { template in
+            // Create Reps for each set (you can customize this logic)
+            let reps = (0..<template.defaultReps).map { _ in
+                Rep(weight: 0, exercise: template.exercise)
+            }
+            
+            // Create Sets with reps
+            let sets = (0..<template.defaultSets).map { _ in
+                ExerciseSet(reps: reps)
+            }
+            
+            return ExerciseSession(sets: sets)
+        }
+        
+        let mySession = ActiveWorkoutSession(title: template.name, timestart: Date(), exercises: exerciseSessions)
+        context.insert(mySession)
+        return mySession
+        
+        
+    }
+    //    let name: String = t
+    //    let exercises: Int
     @State private var offset: CGFloat = 1000
-//    @State private var isShowingSheet = false
+    //    @State private var isShowingSheet = false
     @Binding var isActive: Bool
     @Binding var workoutIsActive:Bool
     @Binding var isInSheetMode:Bool
@@ -32,20 +67,17 @@ struct WorkoutPopUp: View {
             .padding()
             Button {
                 action()
-                workoutIsActive.toggle() // maybe have it so that workout is active is only started when play is pressed.
-                isInSheetMode.toggle()
+                bannerManager.startWorkout(session: createWorkoutSession(template: template))
+                isInSheetMode = true
                 close()
             } label: {
                 ZStack{
-                    
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundColor(Color.blue)
                     Text("Start Session")
                         .font(.system(size: 16, weight: .bold))
                         .foregroundColor(.white)
                         .padding()
-                    
-                    
                 }
                 .padding()
             }
@@ -81,7 +113,7 @@ struct WorkoutPopUp: View {
                 offset = 0
             }
         }
-
+        
     }
     
     func close() {
@@ -98,7 +130,7 @@ struct WorkoutPopUp: View {
 
 
 #Preview {
-//    WorkoutPopUp(name: "Squat", duration: 5, isActive: .constant(true)) {
-//        print("button clicked")
-//    }
+    //    WorkoutPopUp(name: "Squat", duration: 5, isActive: .constant(true)) {
+    //        print("button clicked")
+    //    }
 }

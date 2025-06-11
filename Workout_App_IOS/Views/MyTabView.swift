@@ -37,59 +37,55 @@ struct MainTabbedView: View {
                     .tag(3)
                 
             }
-            
-
-            VStack {
+            VStack{
                 Spacer()
-                if bannerManager.isInBannerMode {
-                    BannerOverlayView(selectedTab: $selectedTab)
-//                        .onTapGesture {
-//                            withAnimation {
-//                                selectedTab = 1
-//                                bannerManager.restoreFullScreen()
-//                            }
-//                        }
-                        .transition(.move(edge: .top).combined(with: .opacity))
-                        .zIndex(1)  // Ensure banner is above everything
-                }
-                ZStack {
-                    
-                    
-                    GeometryReader { geo in
-                        let tabCount = TabbedItems.allCases.count
-                        let tabWidth = geo.size.width / CGFloat(tabCount)
+                ZStack(alignment: .bottom) {
+                    if bannerManager.isInBannerMode {
+                        BannerOverlayView(selectedTab: $selectedTab)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                            .zIndex(1)  // Ensure banner is above everything
+                            .padding(.bottom, 90)
+                    }
+                    ZStack {
                         
-                        // Background that slides
-                        RoundedRectangle(cornerRadius: 0)
-                            .fill(Color.blue)
-                            .frame(width: tabWidth, height: 90)
-                            .offset(x: CGFloat(selectedTab) * tabWidth)
-                            .matchedGeometryEffect(id: "tabBackground", in: tabAnimation)
-                            .animation(.easeInOut(duration: 0.2), value: selectedTab)
-                            .background(.clear)
-                    }
-                    
-                    HStack{
-                        ForEach((TabbedItems.allCases), id: \.self) { item in
-                            Button{
-                                selectedTab = item.rawValue
-                                
-                            } label: {
-                                
-                                CustomTabItem(imageName: item.iconName, title: item.title, isActive: (selectedTab == item.rawValue))
-                            }
+                        
+                        GeometryReader { geo in
+                            let tabCount = TabbedItems.allCases.count
+                            let tabWidth = geo.size.width / CGFloat(tabCount)
+                            
+                            // Background that slides
+                            RoundedRectangle(cornerRadius: 0)
+                                .fill(Color.blue)
+                                .frame(width: tabWidth, height: 90)
+                                .offset(x: CGFloat(selectedTab) * tabWidth)
+                                .matchedGeometryEffect(id: "tabBackground", in: tabAnimation)
+                                .animation(.easeInOut(duration: 0.2), value: selectedTab)
+                                .background(.clear)
                         }
+                        
+                        HStack{
+                            ForEach((TabbedItems.allCases), id: \.self) { item in
+                                Button{
+                                    selectedTab = item.rawValue
+                                    
+                                } label: {
+                                    
+                                    CustomTabItem(imageName: item.iconName, title: item.title, isActive: (selectedTab == item.rawValue))
+                                }
+                            }
+                        }.padding(.vertical, 0)
                     }
+                    .frame(height: 90)
+                    .background(.white.opacity(1))
+                    .padding(.horizontal, 0)
+                    .padding(.vertical, 0)
+                    .opacity(1)
+                    //            .offset(y: bannerManager.isInBannerMode ? 50: 0) // this will push tab bar down if needed
                 }
-                .frame(height: 90)
-                .background(.white.opacity(1))
-                .padding(.horizontal, 0)
-                .opacity(1)
-    //            .offset(y: bannerManager.isInBannerMode ? 50: 0) // this will push tab bar down if needed
             }
-
             
-
+            
+            
             
             
         }.ignoresSafeArea(.all, edges: .all)
@@ -152,16 +148,31 @@ struct BannerOverlayView: View {
     var body: some View {
         VStack {
             Button {
+                dump(bannerManager.bannerData) // print all the workoutsession data stored in the banner.
                 withAnimation {
                     bannerManager.restoreFullScreen()
                 }
                 selectedTab = 1 // change tab back to the logger view
             } label: {
-                HStack {
-                    Text("Banner Placeholder")
+                VStack {
+                    if let bannerData = bannerManager.bannerData{
+                        Text("\(bannerData.title ?? "No Title Set")")
+                        Text("\(bannerData.timestart)")
+                        
+                        Text("\(bannerData.exercises[0].sets[0].reps[0].exercise.name)")
+                        
+                        Text("\(bannerData.exercises[0].sets[0].reps[0].exercise.descriptor)")
+                    }
                 }
+                
+                
             }
         }
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 0)
+                .fill(Color.red)
+        )
     }
     
 }
