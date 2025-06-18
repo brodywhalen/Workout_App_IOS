@@ -3,4 +3,22 @@
    uuid = "AA1BAFCC-5F73-403F-8DC1-E395EC637794"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EB924D3A-C398-4B9D-9782-335011CC819E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Workout_App_IOS/PoseLandmarker.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "liveStreamPoseLandmarkerService(modelPath:numPoses:minPoseDetectionConfidence:minPosePresenceConfidence:minTrackingConfidence:liveStreamDelegate:delegate:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

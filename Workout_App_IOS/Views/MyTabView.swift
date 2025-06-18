@@ -24,13 +24,12 @@ struct MainTabbedView: View {
         ZStack(/*alignment: .bottom*/){
             
             TabView(selection: $selectedTab) {
-                HomePage()
+                ActivityTest()
                     .tag(0)
                 
                 Logger()
                     .tag(1)
-                
-                //                CameraPage() removing for testing purposes
+                CameraPage()
                     .tag(2)
                 
                 UserPage()

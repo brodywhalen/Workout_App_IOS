@@ -40,6 +40,13 @@ struct WorkoutPopUp: View {
         
         let mySession = ActiveWorkoutSession(title: template.name, timestart: Date(), exercises: exerciseSessions)
         context.insert(mySession)
+        do {
+            try context.save()
+            print("Successfully saved ActiveWorkoutSession: \(String(describing: mySession.title))")
+        } catch {
+            print("Error saving ActiveWorkoutSession: \(error)")
+            // Handle the error appropriately, e.g., show an alert
+        }
         return mySession
         
         
@@ -66,10 +73,25 @@ struct WorkoutPopUp: View {
             }
             .padding()
             Button {
-                action()
-                bannerManager.startWorkout(session: createWorkoutSession(template: template))
-                isInSheetMode = true
-                close()
+                Task {
+                    do {
+                        let newSession = try createWorkoutSession(template: template)
+                        
+                        // Await the save operation
+                        try context.save()
+                        print("Successfully saved ActiveWorkoutSession: \(String(describing: newSession.title))")
+                        
+                        // NOW that the save is confirmed, do the rest
+                        bannerManager.startWorkout(session: newSession)
+                        isInSheetMode = true
+                        close()
+                        action() // Call your action if it needs to happen after save and UI updates
+                        
+                    } catch {
+                        print("Error during workout session creation or save: \(error)")
+                        // Potentially show an alert to the user
+                    }
+                }
             } label: {
                 ZStack{
                     RoundedRectangle(cornerRadius: 20)

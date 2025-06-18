@@ -4,10 +4,33 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>PersistentWorkoutActivityExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
 		<key>Workout_App_IOS.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>5</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>496F0A0A2DA2612D00273C29</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>496F0A192DA2613300273C29</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>496F0A232DA2613300273C29</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>

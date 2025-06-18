@@ -76,7 +76,7 @@ struct Logger: View {
         }
         ) {
             if let session = selectedTemplate { // add if gate if this does not work
-                WorkoutSessionPage(TemplateforSession: session)
+                WorkoutSessionPage()
             }
             
         }

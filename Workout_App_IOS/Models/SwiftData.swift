@@ -110,7 +110,6 @@ class WorkoutSession: Identifiable {
 @Model
 class ActiveWorkoutSession: Identifiable {
     var title: String?
-    var id: String
     var timestart: Date
     var timeend: Date?
     var exercises: [ExerciseSession]
@@ -118,7 +117,6 @@ class ActiveWorkoutSession: Identifiable {
     
     
     init(title: String? = nil, timestart: Date, timeend: Date? = nil, exercises: [ExerciseSession]) {
-        self.id = UUID().uuidString
         self.title = title
         self.timestart = timestart
         self.timeend = timeend
@@ -129,13 +127,11 @@ class ActiveWorkoutSession: Identifiable {
 
 @Model
 class ExerciseSession: Identifiable {
-    var id: String
 //    var timestart: Date
 //    var timeend: Date
     var sets: [ExerciseSet]
     
     init(/*timestart: Date,*/ /*timeend: Date*/ sets: [ExerciseSet]){
-        self.id = UUID().uuidString
 //        self.timestart = timestart
 //        self.timeend = timeend
         self.sets = sets
@@ -144,7 +140,6 @@ class ExerciseSession: Identifiable {
 }
 @Model
 class ExerciseSet: Identifiable {
-    var id:String
     var reps: [Rep]
     var setType: SetType?
     
@@ -156,19 +151,16 @@ class ExerciseSet: Identifiable {
     
     
     init(reps: [Rep]) {
-        self.id = UUID().uuidString
         self.reps = reps
     }
 }
 @Model
 class Rep: Identifiable {
-    var id: String
     var weight: Double
     var exercise: Exercise
 //    var timestamp: Date
     
     init(weight: Double, exercise: Exercise) {
-        self.id = UUID().uuidString
         self.weight = weight
         self.exercise = exercise
 //        self.timestamp = timestamp

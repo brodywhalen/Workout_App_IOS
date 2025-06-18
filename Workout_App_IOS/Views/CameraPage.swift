@@ -11,8 +11,6 @@ import CoreImage
 import MediaPipeTasksVision
 
 
-
-
 struct CameraPage: View {
     
     @StateObject private var model = FrameHandler()
@@ -42,8 +40,8 @@ struct FrameView:  View {
 // reads frames from the AVCapture Session
 class FrameHandler: NSObject, ObservableObject {
     @Published var frame:CGImage?
-    private var permissionGranted = false
     private let captureSession = AVCaptureSession()
+    private var permissionGranted = false
 //    private var videoResolution: CGSize
     
     private let sessionQueue = DispatchQueue(label: "sessionQueue")
@@ -168,23 +166,82 @@ extension FrameHandler: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 // MARK: PoseLandmarkerServiceLiveStreamDelegate
 extension FrameHandler: PoseLandmarkerServiceLiveStreamDelegate {
+    
+    func drawPoints(on image: CGImage, points: [CGPoint], color: UIColor = .red, radius: CGFloat = 6.0) -> CGImage? {
+        let width = image.width
+        let height = image.height
+        let rect = CGRect(x: 0, y: 0, width: width, height: height)
 
-  func poseLandmarkerService(
-    _ poseLandmarkerService: PoseLandmarkerService,
-    didFinishDetection result: ResultBundle?,
-    error: Error?) {
-        
-      DispatchQueue.main.async { [weak self] in
-//        guard let weakSelf = self else { return }
-        guard let poseLandmarkerResult = result?.poseLandmarkerResults.first as? PoseLandmarkerResult else { return }
-//        let imageSize = weakSelf.videoResolution
-          //no drawing just print
-          poseLandmarkerResult.landmarks.forEach { NormalizedLandmark in
-              print("x: ",NormalizedLandmark[0].x, " y: ", NormalizedLandmark[0].y)
-          }
- 
-      }
+        guard let colorSpace = image.colorSpace,
+              let context = CGContext(data: nil,
+                                      width: width,
+                                      height: height,
+                                      bitsPerComponent: image.bitsPerComponent,
+                                      bytesPerRow: 0,
+                                      space: colorSpace,
+                                      bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+            return nil
+        }
+
+        // Draw original image
+        context.draw(image, in: rect)
+
+        // Draw landmarks
+        context.setFillColor(color.cgColor)
+        for point in points {
+            let dotRect = CGRect(x: point.x - radius / 2, y: point.y - radius / 2,
+                                 width: radius, height: radius)
+            context.fillEllipse(in: dotRect)
+        }
+
+        return context.makeImage()
     }
-}
 
+//
+//    func poseLandmarkerService(
+//        _ poseLandmarkerService: PoseLandmarkerService,
+//        didFinishDetection result: ResultBundle?,
+//        error: Error?) {
+//            
+//            DispatchQueue.main.async { [weak self] in
+//                //        guard let weakSelf = self else { return }
+//                
+//                guard let poseLandmarkerResult = result?.poseLandmarkerResults.first as? PoseLandmarkerResult else { return }
+//                //        let imageSize = weakSelf.videoResolution
+//                //no drawing just print
+//                poseLandmarkerResult.landmarks.forEach { NormalizedLandmark in
+//                    print("x: ",NormalizedLandmark[0].x, " y: ", NormalizedLandmark[0].y)
+//                }
+//                
+//            }
+//        }
+    func poseLandmarkerService(
+        _ poseLandmarkerService: PoseLandmarkerService,
+        didFinishDetection result: ResultBundle?,
+        error: Error?
+    ) {
+        
+        guard let poseLandmarkerResult = result?.poseLandmarkerResults.first as? PoseLandmarkerResult else { return }
+        guard let originalImage = self.frame else { return }
+
+        let imageWidth = CGFloat(originalImage.width)
+        let imageHeight = CGFloat(originalImage.height)
+
+        // 1. Convert normalized landmarks to actual pixel coordinates
+        let points: [CGPoint] = poseLandmarkerResult.landmarks.flatMap { landmarks in
+            landmarks.map { landmark in
+                CGPoint(x: CGFloat(landmark.x) * imageWidth,
+                        y: (1.0 - CGFloat(landmark.y)) * imageHeight) // flip y coords
+            }
+        }
+
+        // 2. Draw points onto the image
+        if let overlaidImage = drawPoints(on: originalImage, points: points) {
+            DispatchQueue.main.async {
+                self.frame = overlaidImage
+            }
+        }
+    }
+
+}
 
