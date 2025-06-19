@@ -18,7 +18,6 @@ let appContainer: ModelContainer = {
            WorkoutSession.self,
            ExerciseSession.self,
            ExerciseSet.self,
-           Rep.self,
            ActiveWorkoutSession.self
                       
         )

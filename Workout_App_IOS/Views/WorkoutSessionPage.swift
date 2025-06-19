@@ -11,7 +11,9 @@ struct WorkoutSessionPage: View {
     @Query var activeSession: [ActiveWorkoutSession]
     @Environment(\.modelContext) private var modelContext
 //    @State private var sessionState: ActiveWorkoutSession?
-
+    func deleteExercise(_ exercise: ExerciseSession) {
+        modelContext.delete(exercise)
+    }
     
     var body: some View {
         VStack {
@@ -28,9 +30,9 @@ struct WorkoutSessionPage: View {
                     }
                 }
             }
-        }.onAppear(){
-
         }
+        .padding(.horizontal)
+        .frame(maxWidth:.infinity)
 
     }
     
@@ -41,53 +43,100 @@ struct WorkoutSessionPage: View {
 
 struct ExerciseDetailView: View {
     @Bindable var exercise: ExerciseSession
+    @State private var showDeleteAlert = false
     
     //    @State private var Reps: Int
     
     var body: some View {
-        Grid {
+        Grid (horizontalSpacing: 24) {
             Divider()
             GridRow {
                 Group {
                     // header row of exercise table
-                    Text("Set")
-                    Text("Weight (lbs)")
-                    Text("Reps")
-                    Text(Image(systemName: "checkmark.diamond"))
+                    Text("Set").bold()
+                    Text("Weight (lbs)").bold()
+                    Text("Reps").bold()
+                    Text(Image(systemName: "checkmark.diamond")).bold()
                 }
             }
-            Divider()
-            ForEach(exercise.sets) { set in
-                SetDetailView(set: set)
+            Divider().gridCellUnsizedAxes(.horizontal)
+            ForEach(Array(exercise.sets.enumerated()), id: \.1.id) { index, set in
+                SetDetailView(set: set, index: index)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
-            Divider()
+            ZStack {
+                Divider()
+                // TODO: Make it so the model deletes these rows! Also add cascade rule to delete to the model!!
+                HStack(spacing: 24) {
+                    Button(action: {
+                        withAnimation {
+                            if !exercise.sets.isEmpty {
+                                exercise.sets.append(ExerciseSet(reps: 0, weight: 0, exercise: exercise.sets[0].exercise))
+                            }
+                        }
+                    }) {
+                        Image(systemName: "plus.circle")
+                            .font(.title2)
+                    }
+                    Button(action: {
+                        withAnimation {
+                            if (exercise.sets.count > 1) {
+                                exercise.sets.removeLast()
+                            } else {
+                                showDeleteAlert = true
+                            }
+                        }
+                    }) {
+                        Image(systemName: "minus.circle")
+                            .font(.title2)
+                    }
+                    .alert("Deleting last Exercise will delete the entire set", isPresented: $showDeleteAlert) {
+                        Button("Delete", role: .destructive){
+                            exercise.
+                        }
+                    }
+
+
+                }
+                .padding(4)
+                .background(Color(.systemBackground))
+                .cornerRadius(8)
+            }
         }
+        .gridColumnAlignment(.center)
     }
 }
 struct SetDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var set: ExerciseSet
     @State var Weight: String
+    @State var Reps: String
     
-    init(set: ExerciseSet) {
+    private var index: Int
+    
+    init(set: ExerciseSet, index: Int) {
         self.set = set
-        self.Weight = String(set.reps.first?.weight ?? 200.00)
+        self.Weight = String(set.weight )
+        self.index = index + 1
+        self.Reps = String(set.reps )
     }
     
     var body: some View {
         GridRow {
-            Text("a")
+            Text("\(index)")
             TextField("Enter Weight", text: $Weight).onChange(of: Weight) { _, newValue in
-                for i in set.reps.indices {
-                    set.reps[i].weight = Double(newValue) ?? 400.000
+                    set.weight = (Double(newValue ) ?? 0)
                 }
-                
+            .textFieldStyle(.roundedBorder)
+            TextField("Enter Reps", text: $Reps).onChange(of: Reps) { _, newValue in
+                set.reps = (Int(newValue ) ?? 0)
             }
-            Text("c")
+            .textFieldStyle(.roundedBorder)
             Text("d")
+            }
+
         }
     }
-}
 
 
 //#Preview {

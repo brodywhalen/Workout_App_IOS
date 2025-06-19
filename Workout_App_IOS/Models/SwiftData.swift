@@ -140,8 +140,11 @@ class ExerciseSession: Identifiable {
 }
 @Model
 class ExerciseSet: Identifiable {
-    var reps: [Rep]
+    var reps: Int
     var setType: SetType?
+    var weight: Double
+    var exercise: Exercise
+    
     
     enum SetType: Codable {
         case warmUp
@@ -149,23 +152,15 @@ class ExerciseSet: Identifiable {
         case dropSet
     }
     
-    
-    init(reps: [Rep]) {
+    init(reps: Int, setType: SetType? = nil, weight: Double, exercise: Exercise) {
         self.reps = reps
-    }
-}
-@Model
-class Rep: Identifiable {
-    var weight: Double
-    var exercise: Exercise
-//    var timestamp: Date
-    
-    init(weight: Double, exercise: Exercise) {
+        self.setType = setType
         self.weight = weight
         self.exercise = exercise
-//        self.timestamp = timestamp
     }
+    
 }
+
 
 
 

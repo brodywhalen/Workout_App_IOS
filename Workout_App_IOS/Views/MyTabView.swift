@@ -158,9 +158,9 @@ struct BannerOverlayView: View {
                         Text("\(bannerData.title ?? "No Title Set")")
                         Text("\(bannerData.timestart)")
                         
-                        Text("\(bannerData.exercises[0].sets[0].reps[0].exercise.name)")
-                        
-                        Text("\(bannerData.exercises[0].sets[0].reps[0].exercise.descriptor)")
+//     this causes a crash when there is no SET!                    Text("\(bannerData.exercises[0].sets[0].exercise.name)")
+//
+//                        Text("\(bannerData.exercises[0].sets[0].exercise.descriptor)")
                     }
                 }
                 

@@ -25,14 +25,10 @@ struct WorkoutPopUp: View {
         let myExercisesTemplates = template.blocks.flatMap(\.allExercises)
         // now I need to convert these templates into an Array of Exercise Sessions
         let exerciseSessions = myExercisesTemplates.map { template in
-            // Create Reps for each set (you can customize this logic)
-            let reps = (0..<template.defaultReps).map { _ in
-                Rep(weight: 0, exercise: template.exercise)
-            }
             
             // Create Sets with reps
             let sets = (0..<template.defaultSets).map { _ in
-                ExerciseSet(reps: reps)
+                ExerciseSet(reps: template.defaultReps, weight: 0, exercise: template.exercise)
             }
             
             return ExerciseSession(sets: sets)
@@ -75,7 +71,7 @@ struct WorkoutPopUp: View {
             Button {
                 Task {
                     do {
-                        let newSession = try createWorkoutSession(template: template)
+                        let newSession = createWorkoutSession(template: template)
                         
                         // Await the save operation
                         try context.save()
