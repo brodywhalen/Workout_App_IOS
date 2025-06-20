@@ -129,6 +129,7 @@ class ActiveWorkoutSession: Identifiable {
 class ExerciseSession: Identifiable {
 //    var timestart: Date
 //    var timeend: Date
+    var activeWorkout: ActiveWorkoutSession?
     var sets: [ExerciseSet]
     
     init(/*timestart: Date,*/ /*timeend: Date*/ sets: [ExerciseSet]){
