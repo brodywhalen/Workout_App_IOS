@@ -78,9 +78,9 @@ struct Logger: View {
         }
         ) {
             if selectedTemplate != nil { // add if gate if this does not work
-                WorkoutSessionPage(selectedDetent: $selectedDetent)
-                    .presentationDetents([.fraction(0.2), .medium, .large], selection: $selectedDetent)
-                    .interactiveDismissDisabled(selectedDetent != .fraction(0.2))
+                WorkoutSessionPage(/*selectedDetent: $selectedDetent*/)
+//                    .presentationDetents([.fraction(0.2), .medium, .large], selection: $selectedDetent)
+//                    .interactiveDismissDisabled(selectedDetent != .fraction(0.2))
             }
             
         }

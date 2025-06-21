@@ -30,13 +30,26 @@ class BannerManager: ObservableObject {
     @Published var isActiveWorkout: Bool = false
     @Published var isInBannerMode: Bool = false
     @Published var isInSheetMode: Bool = false
-    @Published var bannerData: ActiveWorkoutSession? = nil
+    @Published var bannerData: ActiveWorkoutSession? = nil //maybe switch this to usign query?? Anway on stop workout defintely just want to use query data
+//    @Environment(\.modelContext) private var modelContext
+//    @Query var activeSession: [ActiveWorkoutSession]
     
     
     func startWorkout( session: ActiveWorkoutSession) {
         //--TODO: set title data differently
         bannerData = session
         isActiveWorkout = true
+    }
+    func stopWorkout() {
+        print("Stop Workout Function Called")
+        //reset banner
+        isActiveWorkout = false
+        bannerData = nil
+        isInSheetMode = false
+        isInSheetMode = false
+        // do actual operations on swiftdata store
+        
+
     }
     func saveWorkoutChanges(session: ActiveWorkoutSession) {
     }

@@ -10,101 +10,115 @@ import SwiftData
 struct WorkoutSessionPage: View {
     @Query var activeSession: [ActiveWorkoutSession]
     @Environment(\.modelContext) private var modelContext
-    @Binding var selectedDetent: PresentationDetent
-    @State private var scrollOffset: CGFloat = 0
-    //    @State private var sessionState: ActiveWorkoutSession?
-
+    @EnvironmentObject var bannerManager: BannerManager
     
     var body: some View {
-        ScrollView {
-             VStack {
-                    VStack (alignment: .leading){
-                        Group {
-                            Text("\(activeSession.first?.title ?? "No title")")
-                                .font(.title)
-                            Text("\(activeSession.first?.timestart.formatted(date:.abbreviated, time: .shortened) ?? "Time not set")")
-                        }
-                        .gesture(
-                            DragGesture(minimumDistance: 5, coordinateSpace: .global)
-                                .onChanged { value in
-                                    if value.translation.height > 0, scrollOffset <= 0 {
-                                        withAnimation {
-                                            selectedDetent = .fraction(0.2)
-                                        }
-                                    }
-                                }
-                        )
-                        
-            // This will be the scrollable section, above with bet the section that interactions will cause a sheet dismiss
-                        
-                        Group {
-                            ForEach(activeSession) { session in
-                                ForEach(session.exercises) { exercise in
-                                    ExerciseDetailView(exercise: exercise, onDelete:{ deleteExercise(exercise)})
-                                        .transition(.move(edge: .top).combined(with: .opacity))
-                                }
-                            }
-                        }
-                        .background(GeometryReader { geo in
-                            Color.clear.preference(key: ViewOffsetKey.self, value: -geo.frame(in: .named("scrollViewCoordinateSpace")).minY) // Track scroll offset
-                                .onPreferenceChange(ViewOffsetKey.self) { newValue in
-                                    scrollOffset = newValue
-                                }
-                            
-                        })
-                    }
+        ScrollViewReader { proxy in
+            VStack (alignment: .leading, spacing: 0){
+                headerView
+//                    .padding()
+                    .background(Color.blue.opacity(0.2))
+                ScrollView {
+                    
+                    exerciseListView(proxy: proxy)
+//                        .background(Color.clear)
+                }
+                .background(Color.white)
+                .padding(.horizontal)
+                .frame(maxWidth:.infinity, alignment: .leading)
             }
-         .padding(.horizontal)
-         .frame(maxWidth:.infinity)
+//            .background(Color.blue.opacity(0.2))
+//            .padding(.horizontal)
         }
+    }
+    
+    private var headerView: some View {
+        HStack {
+            VStack (alignment: .leading) {
+                Text("\(activeSession.first?.title ?? "No title")")
+                    .font(.title)
+                Text("\(activeSession.first?.timestart.formatted(date:.abbreviated, time: .shortened) ?? "Time not set")")
+            }
+            Spacer()
+            Button(action: {
+                // do something
+                stopExercise()
+            }) {
+                Image(systemName: "stop.circle")
+                    .font(.title)
+            }
+        }
+        .padding()
+
+    }
+    private func stopExercise() -> Void {
+        // 1) Copy and save data
+        guard let savedSession = activeSession.first else { return print("exit here") }
+        // retains and sets new connections for dependant
+        // gets past active session check
+       print("active session: \(savedSession)")
+        let newItem = WorkoutSession(
+            timestart: savedSession.timestart,
+            timeend: Date(),
+            exercises: savedSession.exercises)
         
-    }
-    
-    struct ViewOffsetKey: PreferenceKey {
-        static var defaultValue: CGFloat? = 0
-        static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
-            value = nextValue()
+        modelContext.insert(newItem)
+        modelContext.delete(savedSession)
+        do {
+            try modelContext.save()
+            bannerManager.stopWorkout()
+            print("Save succeeded")
+        } catch {
+            print("Save failed with error: \(error)")
         }
     }
     
+    private func exerciseListView(proxy: ScrollViewProxy) -> some View {
+        Group {
+            ForEach(activeSession) { session in
+                ForEach(session.exercises) { exercise in
+                    ExerciseDetailView(exercise: exercise, onDelete:{ deleteExercise(exercise)}, scrollProxy: proxy, scrollTargetId: exercise.id)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+        }
+
+    }
     
-     func deleteExercise(_ exerciseToDelete: ExerciseSession) -> Void {
+    func deleteExercise(_ exerciseToDelete: ExerciseSession) -> Void {
         // clean the entire tree
-            guard let session = activeSession.first else {
-                print ("No Active Session Found")
-                return
+        guard let session = activeSession.first else {
+            print ("No Active Session Found")
+            return
+        }
+        // Check if exerciseToDelete is in session.exercises
+        if let index = session.exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
+            // Remove it from the session's array (mutates the model)
+            let foundExercise = session.exercises[index]
+            // suppress the warning that the result of withAnimation is unused
+            _ = withAnimation {
+                session.exercises.remove(at: index)
             }
-            // Check if exerciseToDelete is in session.exercises
-            if let index = session.exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
-                // Remove it from the session's array (mutates the model)
-                let foundExercise = session.exercises[index]
-                // suppress the warning that the result of withAnimation is unused
-                _ = withAnimation {
-                    session.exercises.remove(at: index)
-                }
-                let setsToDelete = foundExercise.sets
-                foundExercise.sets.removeAll()
-                for set in setsToDelete{
-                    modelContext.delete(set)
-                }
-                try? modelContext.save()
-                // Also delete the exercise entity from modelContext to persist deletion
-                modelContext.delete(foundExercise)
-                
-                // Save changes to persist deletion
-                do {
-                    try modelContext.save()
-                    print("Exercise deleted successfully")
-                } catch {
-                    print("Failed to save context after deleting exercise: \(error)")
-                }
-            } else {
-                print("Exercise not found in session")
+            let setsToDelete = foundExercise.sets
+            foundExercise.sets.removeAll()
+            for set in setsToDelete{
+                modelContext.delete(set)
             }
-    }   
-    
-    
-    
+            try? modelContext.save()
+            // Also delete the exercise entity from modelContext to persist deletion
+            modelContext.delete(foundExercise)
+            
+            // Save changes to persist deletion
+            do {
+                try modelContext.save()
+                print("Exercise deleted successfully")
+            } catch {
+                print("Failed to save context after deleting exercise: \(error)")
+            }
+        } else {
+            print("Exercise not found in session")
+        }
+    }
 }
 
 struct ExerciseDetailView: View {
@@ -112,78 +126,109 @@ struct ExerciseDetailView: View {
     @State private var showDeleteAlert = false
     @Environment(\.modelContext) private var modelContext
     var onDelete: (() -> Void)?
+    // scroll proxy
+    var scrollProxy: ScrollViewProxy
+    var scrollTargetId: AnyHashable
     
-    //    @State private var Reps: Int
     
     var body: some View {
-        Grid (horizontalSpacing: 24) {
-            Divider()
-            GridRow {
-                Group {
-                    // header row of exercise table
-                    Text("Set").bold()
-                    Text("Weight (lbs)").bold()
-                    Text("Reps").bold()
-                    Text(Image(systemName: "checkmark.diamond")).bold()
-                }
+        VStack(spacing: 8) {
+            HStack {
+                Text("\(exercise.sets.first?.exercise.name ?? "No Exercise")")
+                    .font(.headline)
+                Spacer()
             }
-            Divider().gridCellUnsizedAxes(.horizontal)
-            ForEach(Array(exercise.sets.enumerated()), id: \.1.id) { index, set in
-                SetDetailView(set: set, index: index)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-            ZStack {
+            Grid (horizontalSpacing: 24) {
                 Divider()
-                // TODO: Make it so the model deletes these rows! Also add cascade rule to delete to the model!!
-                HStack(spacing: 24) {
-                    Button(action: {
-                        withAnimation {
-                            if !exercise.sets.isEmpty {
-                                exercise.sets.append(ExerciseSet(reps: 0, weight: 0, exercise: exercise.sets[0].exercise))
-                            }
-                        }
-                    }) {
-                        Image(systemName: "plus.circle")
-                            .font(.title2)
+                GridRow {
+                    Group {
+                        // header row of exercise table
+                        Text("Set").bold()
+                        Text("Weight (lbs)").bold()
+                        Text("Reps").bold()
+                        Text(Image(systemName: "checkmark.diamond")).bold()
                     }
-                    Button(action: {
-                        withAnimation {
-                            if (exercise.sets.count > 1) {
-                                let removed = exercise.sets.removeLast()
-                                //remove model
-                                modelContext.delete(removed)
-                            } else {
-                                showDeleteAlert = true
-                            }
-                        }
-                    }) {
-                        Image(systemName: "minus.circle")
-                            .font(.title2)
-                    }
-                    .alert("Are you sure?", isPresented: $showDeleteAlert) {
-                        Button("Delete", role: .destructive){
-                            // remove the Exercise (not just the set)
-                            onDelete?()
-                        }
-                        Button("Cancel", role : .cancel) {
-                            
-                        }} message: {
-                            Text("Deleting the last set will remove the entire exercise from your workout log.")
-                        }
                 }
-                
-                
+    //            Divider().gridCellUnsizedAxes(.horizontal)
+                ForEach(Array(exercise.sets.enumerated()), id: \.1.id) { index, set in
+                    SetDetailView(set: set, index: index)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+                ZStack {
+                    Divider()
+                    // TODO: Make it so the model deletes these rows! Also add cascade rule to delete to the model!!
+                    HStack(spacing: 24) {
+                        Button(action: {
+                            withAnimation {
+                                if !exercise.sets.isEmpty {
+                                    exercise.sets.append(ExerciseSet(reps: 0, weight: 0, exercise: exercise.sets[0].exercise))
+                                }
+                            }
+                            // scroll to when adding
+                            
+                                
+                         
+                            
+                        }) {
+                            Image(systemName: "plus.circle")
+                                .font(.title2)
+                        }
+                        Button(action: {
+                            withAnimation {
+                                if (exercise.sets.count > 1) {
+                                    let removed = exercise.sets.removeLast()
+                                    //remove model
+                                    modelContext.delete(removed)
+                                } else {
+                                    showDeleteAlert = true
+                                }
+                            }
+                        }) {
+                            Image(systemName: "minus.circle")
+                                .font(.title2)
+                        }
+                        .alert("Are you sure?", isPresented: $showDeleteAlert) {
+                            Button("Delete", role: .destructive){
+                                // remove the Exercise (not just the set)
+                                onDelete?()
+                            }
+                            Button("Cancel", role : .cancel) {
+                                
+                            }} message: {
+                                Text("Deleting the last set will remove the entire exercise from your workout log.")
+                            }
+                    }
+                    .id(scrollTargetId)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(8)
+                    .onChange(of: exercise.sets.count) { oldValue, newValue in
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1){
+                                withAnimation {
+                                    scrollProxy.scrollTo(scrollTargetId, anchor: .bottom)
+                                }
+                            }
+                        }
+                    
+                }
+    //            .padding(8)
+
                 
             }
-            .padding(4)
-            .background(Color(.systemBackground))
-            .cornerRadius(8)
+            .gridColumnAlignment(.center)
+            .padding(8)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.white)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .strokeBorder(Color.gray, lineWidth: 2)
+            )
         }
-        .gridColumnAlignment(.center)
-    }
+
+        }
         
 }
-
 struct SetDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Bindable var set: ExerciseSet

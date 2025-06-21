@@ -147,8 +147,3 @@ struct WorkoutPopUp: View {
 }
 
 
-#Preview {
-    //    WorkoutPopUp(name: "Squat", duration: 5, isActive: .constant(true)) {
-    //        print("button clicked")
-    //    }
-}
