@@ -10,56 +10,98 @@ import SwiftData
 struct WorkoutSessionPage: View {
     @Query var activeSession: [ActiveWorkoutSession]
     @Environment(\.modelContext) private var modelContext
+    @Binding var selectedDetent: PresentationDetent
+    @State private var scrollOffset: CGFloat = 0
     //    @State private var sessionState: ActiveWorkoutSession?
-    func deleteExercise(_ exerciseToDelete: ExerciseSession) -> Void {
-        // clean the entire tree
-        guard let session = activeSession.first else {
-            print ("No Active Session Found")
-            return
-        }
-        // Check if exerciseToDelete is in session.exercises
-        if let index = session.exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
-            // Remove it from the session's array (mutates the model)
-            let foundExercise = session.exercises.remove(at: index)
-            for exercise in foundExercise.sets {
-                modelContext.delete(exercise)
-            }
-            // Also delete the exercise entity from modelContext to persist deletion
-            modelContext.delete(exerciseToDelete)
-            
-            // Save changes to persist deletion
-            do {
-                try modelContext.save()
-                print("Exercise deleted successfully")
-            } catch {
-                print("Failed to save context after deleting exercise: \(error)")
-            }
-        } else {
-            print("Exercise not found in session")
-        }
-    }
+
     
     var body: some View {
-        VStack {
-            HStack {
-                VStack (alignment: .leading){
-                    
-                    Text("\(activeSession.first?.title ?? "No title")")
-                        .font(.title)
-                    Text("\(activeSession.first?.timestart.formatted(date:.abbreviated, time: .shortened) ?? "Time not set")")
-                    ForEach(activeSession) { session in
-                        ForEach(session.exercises) { exercise in
-                            ExerciseDetailView(exercise: exercise, onDelete:{ deleteExercise(exercise)})
+        ScrollView {
+             VStack {
+                    VStack (alignment: .leading){
+                        Group {
+                            Text("\(activeSession.first?.title ?? "No title")")
+                                .font(.title)
+                            Text("\(activeSession.first?.timestart.formatted(date:.abbreviated, time: .shortened) ?? "Time not set")")
                         }
+                        .gesture(
+                            DragGesture(minimumDistance: 5, coordinateSpace: .global)
+                                .onChanged { value in
+                                    if value.translation.height > 0, scrollOffset <= 0 {
+                                        withAnimation {
+                                            selectedDetent = .fraction(0.2)
+                                        }
+                                    }
+                                }
+                        )
+                        
+            // This will be the scrollable section, above with bet the section that interactions will cause a sheet dismiss
+                        
+                        Group {
+                            ForEach(activeSession) { session in
+                                ForEach(session.exercises) { exercise in
+                                    ExerciseDetailView(exercise: exercise, onDelete:{ deleteExercise(exercise)})
+                                        .transition(.move(edge: .top).combined(with: .opacity))
+                                }
+                            }
+                        }
+                        .background(GeometryReader { geo in
+                            Color.clear.preference(key: ViewOffsetKey.self, value: -geo.frame(in: .named("scrollViewCoordinateSpace")).minY) // Track scroll offset
+                                .onPreferenceChange(ViewOffsetKey.self) { newValue in
+                                    scrollOffset = newValue
+                                }
+                            
+                        })
                     }
-                }
             }
+         .padding(.horizontal)
+         .frame(maxWidth:.infinity)
         }
-        .padding(.horizontal)
-        .frame(maxWidth:.infinity)
         
     }
     
+    struct ViewOffsetKey: PreferenceKey {
+        static var defaultValue: CGFloat? = 0
+        static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+            value = nextValue()
+        }
+    }
+    
+    
+     func deleteExercise(_ exerciseToDelete: ExerciseSession) -> Void {
+        // clean the entire tree
+            guard let session = activeSession.first else {
+                print ("No Active Session Found")
+                return
+            }
+            // Check if exerciseToDelete is in session.exercises
+            if let index = session.exercises.firstIndex(where: { $0.id == exerciseToDelete.id }) {
+                // Remove it from the session's array (mutates the model)
+                let foundExercise = session.exercises[index]
+                // suppress the warning that the result of withAnimation is unused
+                _ = withAnimation {
+                    session.exercises.remove(at: index)
+                }
+                let setsToDelete = foundExercise.sets
+                foundExercise.sets.removeAll()
+                for set in setsToDelete{
+                    modelContext.delete(set)
+                }
+                try? modelContext.save()
+                // Also delete the exercise entity from modelContext to persist deletion
+                modelContext.delete(foundExercise)
+                
+                // Save changes to persist deletion
+                do {
+                    try modelContext.save()
+                    print("Exercise deleted successfully")
+                } catch {
+                    print("Failed to save context after deleting exercise: \(error)")
+                }
+            } else {
+                print("Exercise not found in session")
+            }
+    }   
     
     
     
@@ -174,20 +216,3 @@ struct SetDetailView: View {
     }
 }
 
-
-//#Preview {
-//    let exercise1 = Exercise(name: "testsquat", descriptor: "just for funsies")
-//    let exercise2 = Exercise(name: "testlift", descriptor: "tesylewis")
-//
-//    let template1 = ExerciseTemplate(defaultSets: 4, defaultReps: 5, excercise: exercise1)
-//    let template2 = ExerciseTemplate(defaultSets: 6, defaultReps: 7, excercise: exercise2)
-//
-//    let block = WorkoutBlock(workoutTemplate: nil, type: .superset, exercise: nil, exercises: [template1, template2])
-//
-//    let workoutTemplate = WorkoutTemplate(name: "Mock Template", descriptor: "Preview Description", blocks: [block])
-//
-//    // back-fill the template reference to avoid circular logic errors in previews
-//    block.workoutTemplate = workoutTemplate
-//
-//    return WorkoutSessionPage(TemplateforSession: workoutTemplate)
-//}

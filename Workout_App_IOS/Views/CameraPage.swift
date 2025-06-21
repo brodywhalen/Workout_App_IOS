@@ -102,6 +102,18 @@ class FrameHandler: NSObject, ObservableObject {
     func requestPermission(){
         AVCaptureDevice.requestAccess(for: .video) { [unowned self] granted in
             self.permissionGranted = granted
+            // added this below to fix issues with permissions not starting the camera when granted intially
+            if granted {
+                // Permission granted, now set up and start the session
+                self.sessionQueue.async { [unowned self] in
+                    self.setupCaptureSession()
+                    self.captureSession.startRunning()
+                    self.clearAndInitializePoseLandmarkerService() // Re-initialize if needed
+                }
+            } else {
+                // Permission denied, handle accordingly (e.g., show an alert)
+                print("Camera permission denied.")
+            }
             
         }
     }

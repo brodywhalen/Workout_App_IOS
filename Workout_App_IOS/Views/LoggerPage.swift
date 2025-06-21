@@ -20,6 +20,8 @@ struct Logger: View {
     @State private var showingModal = false
 //    @State private var showingWorkoutSession = false
     @State private var selectedTemplate: WorkoutTemplate? = nil
+    // State for the sheet custom scrolldown
+    @State private var selectedDetent: PresentationDetent = .medium
     
     func deleteTemplate(_ template: WorkoutTemplate) {
         context.delete(template)
@@ -75,8 +77,10 @@ struct Logger: View {
             }
         }
         ) {
-            if let session = selectedTemplate { // add if gate if this does not work
-                WorkoutSessionPage()
+            if selectedTemplate != nil { // add if gate if this does not work
+                WorkoutSessionPage(selectedDetent: $selectedDetent)
+                    .presentationDetents([.fraction(0.2), .medium, .large], selection: $selectedDetent)
+                    .interactiveDismissDisabled(selectedDetent != .fraction(0.2))
             }
             
         }
