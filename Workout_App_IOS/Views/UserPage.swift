@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SwiftData
-
+import Charts
 
 struct UserPage: View {
     @Environment(\.modelContext) private var modelContext
@@ -15,9 +15,20 @@ struct UserPage: View {
     
     var body: some View {
         VStack {
-            ForEach(workoutSessions) { workoutSessions in
-                Text("\(workoutSessions.timestart)")
+            ScrollView {
+                Chart(workoutSessions) {
+                    LineMark(x: .value("Date", $0.timestart),
+                             y: .value("Exercises Completed", $0.exercises.count)
+                    )
+                    
+                }
+                
+                
+                ForEach(workoutSessions) { workoutSessions in
+                    Text("\(workoutSessions.timestart)")
+                }
             }
+            
         }
     }
 }

@@ -21,10 +21,11 @@ struct WorkoutSessionPage: View {
                 ScrollView {
                     
                     exerciseListView(proxy: proxy)
+                        .padding(.horizontal)
 //                        .background(Color.clear)
                 }
                 .background(Color.white)
-                .padding(.horizontal)
+//                .padding(.horizontal)
                 .frame(maxWidth:.infinity, alignment: .leading)
             }
 //            .background(Color.blue.opacity(0.2))
@@ -139,7 +140,7 @@ struct ExerciseDetailView: View {
                 Spacer()
             }
             Grid (horizontalSpacing: 24) {
-                Divider()
+//                Divider()
                 GridRow {
                     Group {
                         // header row of exercise table
@@ -149,7 +150,7 @@ struct ExerciseDetailView: View {
                         Text(Image(systemName: "checkmark.diamond")).bold()
                     }
                 }
-    //            Divider().gridCellUnsizedAxes(.horizontal)
+                Divider().gridCellUnsizedAxes(.horizontal)
                 ForEach(Array(exercise.sets.enumerated()), id: \.1.id) { index, set in
                     SetDetailView(set: set, index: index)
                         .transition(.move(edge: .top).combined(with: .opacity))
