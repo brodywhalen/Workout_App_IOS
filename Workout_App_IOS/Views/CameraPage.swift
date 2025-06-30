@@ -12,34 +12,56 @@ import MediaPipeTasksVision
 
 
 struct CameraPage: View {
-    
     @StateObject private var model = FrameHandler()
-    
+    @State private var currentZoomFactor: CGFloat = 1.0
+    @State private var lastZoomFactor: CGFloat = 1.0
+
     var body: some View {
-        FrameView(image:model.frame)
+        FrameView(image: model.frame)
+//            .border(Color.red, width: 4)
+            .gesture(
+                MagnificationGesture()
+                    .onChanged { value in
+                        let newZoom = lastZoomFactor * value
+                        currentZoomFactor = min(max(newZoom, 1.0), model.maxAvailableZoom)
+                        model.setZoomFactor(currentZoomFactor)
+                    }
+                    .onEnded { _ in
+                        lastZoomFactor = currentZoomFactor
+                    }
+            )
             .ignoresSafeArea()
-        
     }
 }
 
 
 // SwiftUI View that presents the image
-struct FrameView:  View {
+struct FrameView: View {
     var image: CGImage?
     private let label = Text("Frame")
-    
+
     var body: some View {
-        if let image = image {
-            Image(image, scale: 1.0, orientation: .up, label: label)
-        } else {
-            Color.black
+        GeometryReader { geometry in
+            if let image = image {
+                let imageAspectRatio = CGFloat(image.width) / CGFloat(image.height)
+
+                Image(image, scale: 1.0, orientation: .up, label: label)
+                    .resizable()
+                    .aspectRatio(imageAspectRatio, contentMode: .fit) // Maintain original ratio
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .clipped()
+                    .border(Color.red)
+            } else {
+                Color.black
+            }
         }
     }
-    
 }
+
 // reads frames from the AVCapture Session
 class FrameHandler: NSObject, ObservableObject {
     @Published var frame:CGImage?
+    
     private let captureSession = AVCaptureSession()
     private var permissionGranted = false
 //    private var videoResolution: CGSize
@@ -63,6 +85,24 @@ class FrameHandler: NSObject, ObservableObject {
     
     
     private let context = CIContext()
+    
+    // ZOOMING
+    private var videoDevice: AVCaptureDevice?
+    var maxAvailableZoom: CGFloat {
+        return videoDevice?.activeFormat.videoMaxZoomFactor ?? 5.0
+    }
+
+    func setZoomFactor(_ zoomFactor: CGFloat) {
+        guard let device = videoDevice else { return }
+        do {
+            try device.lockForConfiguration()
+            device.videoZoomFactor = zoomFactor
+            device.unlockForConfiguration()
+        } catch {
+            print("Failed to set zoom: \(error)")
+        }
+    }
+    
     
     override init() {
         super.init()
@@ -126,8 +166,11 @@ class FrameHandler: NSObject, ObservableObject {
         ]
         
         guard permissionGranted else {return} // cancels if permission not granted, maybe update as state since it did not on load
-        guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:.back) else {return}
-        guard let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {return}
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:.back) else { return }
+        videoDevice = device
+
+        guard let videoDeviceInput = try? AVCaptureDeviceInput(device: device) else { return }
+
         guard captureSession.canAddInput(videoDeviceInput) else {return}
         captureSession.addInput(videoDeviceInput)
         
