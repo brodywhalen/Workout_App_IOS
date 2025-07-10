@@ -7,3 +7,8 @@
 
 // Configuration settings file format documentation can be found at:
 // https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+
+
+SUPABASE_URL = https:/$()/mcvqkoluzvexpsbwghui.supabase.co
+SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jdnFrb2x1enZleHBzYndnaHVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1MTg5ODUsImV4cCI6MjA2NzA5NDk4NX0.AQ32jcUUezNKb38hTA0kXHuVq64pMByEsvqzRzsXZ-k

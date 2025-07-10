@@ -10,6 +10,7 @@ import SwiftData
 
 // defines schema of what is going to be stored localy.
 
+
 @Model
 class WorkoutTemplate: Identifiable {
     var id: String

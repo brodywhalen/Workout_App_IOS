@@ -30,6 +30,7 @@ struct MainTabbedView: View {
                 Logger()
                     .tag(1)
 //                CameraPage()
+                SignInPage()
                     .tag(2)
                 
                 UserPage()

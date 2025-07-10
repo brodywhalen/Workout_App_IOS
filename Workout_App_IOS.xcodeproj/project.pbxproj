@@ -12,6 +12,15 @@
 		49742A142DFA4C3400DC2602 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49742A132DFA4C3300DC2602 /* WidgetKit.framework */; };
 		49742A162DFA4C3400DC2602 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49742A152DFA4C3400DC2602 /* SwiftUI.framework */; };
 		49742A272DFA4C3400DC2602 /* PersistentWorkoutActivityExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 49742A122DFA4C3300DC2602 /* PersistentWorkoutActivityExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		49C9F10A2E1E3833000FDE81 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F1092E1E3833000FDE81 /* Auth */; };
+		49C9F10C2E1E3833000FDE81 /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F10B2E1E3833000FDE81 /* Functions */; };
+		49C9F10E2E1E3833000FDE81 /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F10D2E1E3833000FDE81 /* PostgREST */; };
+		49C9F1102E1E3833000FDE81 /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F10F2E1E3833000FDE81 /* Realtime */; };
+		49C9F1122E1E3833000FDE81 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F1112E1E3833000FDE81 /* Storage */; };
+		49C9F1142E1E3833000FDE81 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F1132E1E3833000FDE81 /* Supabase */; };
+		49C9F1172E1F3B22000FDE81 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F1162E1F3B22000FDE81 /* GoogleSignIn */; };
+		49C9F1192E1F3B22000FDE81 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 49C9F1182E1F3B22000FDE81 /* GoogleSignInSwift */; };
+		49C9F11D2E1F4EAD000FDE81 /* client_462490239012-c3ulfo93q034f1umaap6rh26pmu454ei.apps.googleusercontent.com (2).plist in Resources */ = {isa = PBXBuildFile; fileRef = 49C9F11C2E1F4EAD000FDE81 /* client_462490239012-c3ulfo93q034f1umaap6rh26pmu454ei.apps.googleusercontent.com (2).plist */; };
 		49DB4FD82DB8B89E00854ABD /* Podfile.lock in Resources */ = {isa = PBXBuildFile; fileRef = 49DB4FD62DB8B88F00854ABD /* Podfile.lock */; };
 		CB1436F39AE3EC53EA1B6880 /* Pods_Workout_App_IOS_Workout_App_IOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BD00E3EB502E5F35403C7A1 /* Pods_Workout_App_IOS_Workout_App_IOSUITests.framework */; };
 /* End PBXBuildFile section */
@@ -63,6 +72,7 @@
 		49742A122DFA4C3300DC2602 /* PersistentWorkoutActivityExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PersistentWorkoutActivityExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		49742A132DFA4C3300DC2602 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		49742A152DFA4C3400DC2602 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		49C9F11C2E1F4EAD000FDE81 /* client_462490239012-c3ulfo93q034f1umaap6rh26pmu454ei.apps.googleusercontent.com (2).plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "client_462490239012-c3ulfo93q034f1umaap6rh26pmu454ei.apps.googleusercontent.com (2).plist"; sourceTree = "<group>"; };
 		49DB4FD62DB8B88F00854ABD /* Podfile.lock */ = {isa = PBXFileReference; lastKnownFileType = text; path = Podfile.lock; sourceTree = "<group>"; };
 		727EA52CC81525C87A590BF6 /* Pods-Workout_App_IOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Workout_App_IOSTests.debug.xcconfig"; path = "Target Support Files/Pods-Workout_App_IOSTests/Pods-Workout_App_IOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7D7572F8E7DC267AF9DCA32E /* Pods-Workout_App_IOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Workout_App_IOS.debug.xcconfig"; path = "Target Support Files/Pods-Workout_App_IOS/Pods-Workout_App_IOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -122,6 +132,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49C9F1192E1F3B22000FDE81 /* GoogleSignInSwift in Frameworks */,
+				49C9F1142E1E3833000FDE81 /* Supabase in Frameworks */,
+				49C9F1172E1F3B22000FDE81 /* GoogleSignIn in Frameworks */,
+				49C9F1122E1E3833000FDE81 /* Storage in Frameworks */,
+				49C9F10E2E1E3833000FDE81 /* PostgREST in Frameworks */,
+				49C9F10C2E1E3833000FDE81 /* Functions in Frameworks */,
+				49C9F10A2E1E3833000FDE81 /* Auth in Frameworks */,
+				49C9F1102E1E3833000FDE81 /* Realtime in Frameworks */,
 				1C837EF8074F6B8B8D578E71 /* Pods_Workout_App_IOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +183,7 @@
 				496F0A0C2DA2612D00273C29 /* Products */,
 				D7D18B7CAE66E2691AF15CC3 /* Pods */,
 				F4837A8F480C34F88081992B /* Frameworks */,
+				49C9F11C2E1F4EAD000FDE81 /* client_462490239012-c3ulfo93q034f1umaap6rh26pmu454ei.apps.googleusercontent.com (2).plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -331,6 +350,10 @@
 			);
 			mainGroup = 496F0A022DA2612D00273C29;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				49C9F1152E1F3B22000FDE81 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 496F0A0C2DA2612D00273C29 /* Products */;
 			projectDirPath = "";
@@ -350,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				49DB4FD82DB8B89E00854ABD /* Podfile.lock in Resources */,
+				49C9F11D2E1F4EAD000FDE81 /* client_462490239012-c3ulfo93q034f1umaap6rh26pmu454ei.apps.googleusercontent.com (2).plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,6 +521,8 @@
 /* Begin XCBuildConfiguration section */
 		496F0A2C2DA2613300273C29 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 496F0A0D2DA2612D00273C29 /* Workout_App_IOS */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -560,6 +586,8 @@
 		};
 		496F0A2D2DA2613300273C29 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 496F0A0D2DA2612D00273C29 /* Workout_App_IOS */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -625,6 +653,8 @@
 				DEVELOPMENT_TEAM = 6L77Y3X3HC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Workout-App-IOS-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Workout app";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required to record and preview";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -632,7 +662,6 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -659,6 +688,8 @@
 				DEVELOPMENT_TEAM = 6L77Y3X3HC;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Workout-App-IOS-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Workout app";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Camera required to record and preview";
 				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
@@ -666,7 +697,6 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UIStatusBarStyle = "";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -861,6 +891,68 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+		49C9F1152E1F3B22000FDE81 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		49C9F1092E1E3833000FDE81 /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		49C9F10B2E1E3833000FDE81 /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		49C9F10D2E1E3833000FDE81 /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		49C9F10F2E1E3833000FDE81 /* Realtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Realtime;
+		};
+		49C9F1112E1E3833000FDE81 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+		49C9F1132E1E3833000FDE81 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1082E1E379F000FDE81 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		49C9F1162E1F3B22000FDE81 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1152E1F3B22000FDE81 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		49C9F1182E1F3B22000FDE81 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 49C9F1152E1F3B22000FDE81 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 496F0A032DA2612D00273C29 /* Project object */;
 }

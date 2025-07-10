@@ -4,4 +4,6 @@ Pods/
 *.xcframework
 *.a
 *.framework
+*.xcconfig
+*.plist
 
