@@ -29,31 +29,15 @@ let supabase = SupabaseClient(
   supabaseKey: SupabaseConfig.key
 )
 
-@MainActor
-class AuthViewModel: ObservableObject {
-    // This will hold the user's session and update the UI when it changes.
-    @Published var session: Session?
-
-    init() {
-        // 2. Set up a listener that fires whenever the auth state changes.
-        // This is the key to making your UI react automatically to logins and logouts.
-        Task {
-            for await state in supabase.auth.authStateChanges {
-                // The session is nil if the user is logged out.
-                self.session = state.session
-            }
-        }
-    }
-}
-
 struct SignInPage: View {
     // State to manage and display potential errors to the user.
     @State private var errorMessage: String?
-    @StateObject private var authViewModel: AuthViewModel = AuthViewModel()
-
+// add ENV to pass doe the object
+    @EnvironmentObject var userData: UserStateData
+    
     var body: some View {
         VStack(spacing: 16) {
-            Text("Login State:\(authViewModel.session == nil ? "Logged Out" : "Logged In") ")
+            Text("Login State:\(userData.session == nil ? "Logged Out" : "Logged In") ")
             // The button that initiates the Google Sign-In flow.
             Button(action: {
                 // We wrap the asynchronous sign-in logic in a Task.
@@ -104,6 +88,11 @@ struct SignInPage: View {
             }
             .buttonStyle(.bordered)
             .tint(.red)
+            
+            // This is going to test the supabase data protection ect..
+            DataTester()
+                .background(.red)
+            
         }
         // Log out button
 
@@ -155,6 +144,55 @@ struct SignInPage: View {
             print("Error during Google Sign-In or Supabase auth: \(error.localizedDescription)")
             errorMessage = "An error occurred: \(error.localizedDescription)"
         }
+    }
+}
+
+struct DataTester: View {
+    
+    struct TestTable: Decodable, Identifiable{
+        let id: Int
+        let created_at: String
+        let content: String
+    }
+    
+    func loadData() async {
+        
+        do {
+            print("started fetching!")
+            let fetchedData: [TestTable] = try await supabase
+                .from("Test")
+                .select("*")
+                .execute()
+                .value
+            print("fetched data: \(fetchedData)")
+            self.testdata = fetchedData
+        } catch  {
+            print(error)
+            print("something went wrong retrieving the test data")
+        }
+    }
+    
+    @State private var testdata: [TestTable] = []
+    
+    var body: some View {
+    
+        List(testdata) { row in
+            VStack(alignment: .leading) {
+                HStack {
+                    Text("\(row.id)")
+                        .font(.headline)
+                    Text(" : \(row.content)")
+                        .font(.headline)
+                }
+            }
+
+            
+            
+        }
+        .task {
+            await loadData()
+        }
+        
     }
 }
 

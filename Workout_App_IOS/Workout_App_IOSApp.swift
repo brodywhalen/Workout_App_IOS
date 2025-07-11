@@ -7,21 +7,31 @@
 
 import SwiftUI
 import SwiftData
+import Auth
 
 
 @main
 struct Workout_App_IOSApp: App {
-
-@StateObject var bannerManager = BannerManager() // intializes the banner at startup....maybe not the best idea if I was perfect
     
-
+    @StateObject var bannerManager = BannerManager()// intializes the banner at startup....maybe not the best idea if I was perfect
+    @StateObject var userData = UserStateData()
+    
+    
     var body: some Scene {
         WindowGroup {
-            MainTabbedView()
-                .environmentObject(bannerManager)
+            if(userData.session != nil) {
+                
+                MainTabbedView()
+                    .environmentObject(bannerManager)
+                    .environmentObject(userData)
+            }
+            else {
+                SignInPage()
+                    .environmentObject(userData)
+            }
         }
         .modelContainer(appContainer)
-
+        
     }
 }
 
@@ -31,8 +41,8 @@ class BannerManager: ObservableObject {
     @Published var isInBannerMode: Bool = false
     @Published var isInSheetMode: Bool = false
     @Published var bannerData: ActiveWorkoutSession? = nil //maybe switch this to usign query?? Anway on stop workout defintely just want to use query data
-//    @Environment(\.modelContext) private var modelContext
-//    @Query var activeSession: [ActiveWorkoutSession]
+    //    @Environment(\.modelContext) private var modelContext
+    //    @Query var activeSession: [ActiveWorkoutSession]
     
     
     func startWorkout( session: ActiveWorkoutSession) {
@@ -49,7 +59,7 @@ class BannerManager: ObservableObject {
         isInSheetMode = false
         // do actual operations on swiftdata store
         
-
+        
     }
     func saveWorkoutChanges(session: ActiveWorkoutSession) {
     }
@@ -57,5 +67,21 @@ class BannerManager: ObservableObject {
     func restoreFullScreen(){
         print("restoring full screen")
         isInSheetMode = true
+    }
+}
+@MainActor
+class UserStateData: ObservableObject {
+    
+    @Published var session: Session?
+    
+    init() {
+        // 2. Set up a listener that fires whenever the auth state changes.
+        // This is the key to making your UI react automatically to logins and logouts.
+        Task {
+            for await state in supabase.auth.authStateChanges {
+                // The session is nil if the user is logged out.
+                self.session = state.session
+            }
+        }
     }
 }
